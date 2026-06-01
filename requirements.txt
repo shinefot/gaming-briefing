@@ -1,0 +1,5 @@
+requests>=2.31
+# added as later lanes land:
+#   feedparser   (news lane — RSS parsing)
+#   tavily-python (news lane — search)
+#   anthropic / google-genai (reasoning plane — synthesis)

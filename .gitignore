@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Secrets — never commit real keys
+.env
+
+# NOTE: data/briefing.db is intentionally NOT ignored.
+# The committed database file is the time-series dataset, and its git
+# history is the proof-of-running. Do not add it here.
