@@ -6,7 +6,7 @@ on:
   workflow_dispatch:           # also lets you trigger it by hand from the Actions tab
 
 permissions:
-  contents: write              # allows the job to commit the updated data back
+  contents: write              # allows the job to commit the updated data + brief back
 
 jobs:
   collect:
@@ -26,15 +26,16 @@ jobs:
       - name: Run tests
         run: python -m pytest -q
 
-      - name: Run the data plane
+      - name: Run the pipeline (data + brief)
         env:
           FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python run.py
 
-      - name: Commit updated data
+      - name: Commit updated data and brief
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/briefing.db
-          git diff --staged --quiet || git commit -m "Daily data update: $(date -u +%Y-%m-%d)"
+          git add data/briefing.db briefings/
+          git diff --staged --quiet || git commit -m "Daily update: $(date -u +%Y-%m-%d)"
           git push
