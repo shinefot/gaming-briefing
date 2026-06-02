@@ -31,6 +31,9 @@ _load_env()
 
 # --- secrets / settings (populated from .env above) ---
 FINNHUB_API_KEY = os.environ.get("FINNHUB_API_KEY", "")
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+# Haiku is the cheap, fast model — right for summarizing structured data.
+BRIEF_MODEL = os.environ.get("BRIEF_MODEL", "claude-haiku-4-5-20251001")
 # SEC asks for a descriptive User-Agent with contact info on every request.
 # Put your own email in .env as SEC_USER_AGENT to be a good citizen.
 SEC_USER_AGENT = os.environ.get(

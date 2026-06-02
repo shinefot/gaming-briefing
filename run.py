@@ -9,10 +9,13 @@ comes next. Every lane fails gracefully: a dead source produces a smaller
 number, never a crash.
 """
 from briefing.config import (
-    DB_PATH, FINNHUB_API_KEY, TRACKED, all_appids, all_tickers,
+    DB_PATH, FINNHUB_API_KEY, ANTHROPIC_API_KEY, TRACKED, all_appids, all_tickers,
 )
 from briefing.fetchers import finnhub, sec, steam
 from briefing.store import Store
+from briefing import brief
+from briefing.models import utcnow
+from pathlib import Path
 
 
 def run_data_plane() -> None:
@@ -34,6 +37,17 @@ def run_data_plane() -> None:
         print(f"[data-plane] finnhub: got {len(prices)} prices, stored {store.upsert_metrics(prices)} metrics")
     else:
         print("[data-plane] finnhub: no API key in .env — skipping prices")
+
+    # --- Reasoning plane: write the briefing ---
+    if ANTHROPIC_API_KEY:
+        text = brief.generate(store)
+        out_dir = Path(__file__).resolve().parent / "briefings"
+        out_dir.mkdir(exist_ok=True)
+        out_path = out_dir / f"{utcnow().date().isoformat()}.md"
+        out_path.write_text(text, encoding="utf-8")
+        print(f"[reasoning]  brief:   written to {out_path.relative_to(Path(__file__).resolve().parent)}")
+    else:
+        print("[reasoning]  brief:   no ANTHROPIC_API_KEY in .env — skipping brief")
 
     store.close()
 
